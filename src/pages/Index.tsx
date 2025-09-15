@@ -20,6 +20,8 @@ import { SuperAdminDashboard } from "@/components/dashboards/SuperAdminDashboard
 import { OwnerDashboard } from "@/components/dashboards/OwnerDashboard";
 import { AdopterDashboard } from "@/components/dashboards/AdopterDashboard";
 import { RoleBasedRoute } from "@/components/RoleBasedRoute";
+import { AIRecommendations } from "@/components/AIRecommendations";
+import { AdvancedStats } from "@/components/AdvancedStats";
 import { useUser } from "@/contexts/UserContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -74,6 +76,16 @@ const Index = () => {
         return {
           title: "Messages - PetMatch", 
           description: "Vos conversations avec les propriétaires d'animaux."
+        };
+      case "ai-recommendations":
+        return {
+          title: "Recommandations IA - PetMatch",
+          description: "Suggestions personnalisées par intelligence artificielle."
+        };
+      case "stats":
+        return {
+          title: "Statistiques - PetMatch",
+          description: "Analyses détaillées de votre activité sur PetMatch."
         };
       case "profile":
         return {
@@ -157,6 +169,10 @@ const Index = () => {
         return <FavoritesPage />;
       case "messages":
         return <MessagesPage />;
+      case "ai-recommendations":
+        return <AIRecommendations />;
+      case "stats":
+        return <AdvancedStats />;
       case "profile":
         return <ProfilePage />;
       case "settings":

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, Heart, Search, User, Bell, Settings, LogOut, Star, Shield, BarChart3, MessageCircle, Users } from "lucide-react";
+import { Menu, Heart, Search, User, Bell, Settings, LogOut, Star, Shield, BarChart3, MessageCircle, Users, Sparkles, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -49,6 +49,18 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
       id: "messages",
       label: "Messages",
       icon: MessageCircle,
+      showForGuests: false
+    },
+    {
+      id: "ai-recommendations",
+      label: "IA",
+      icon: Sparkles,
+      showForGuests: false
+    },
+    {
+      id: "stats",
+      label: "Stats",
+      icon: TrendingUp,
       showForGuests: false
     },
     { 

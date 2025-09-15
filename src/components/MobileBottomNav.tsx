@@ -1,4 +1,4 @@
-import { Heart, Search, MessageCircle, User, Settings, Star } from "lucide-react";
+import { Heart, Search, MessageCircle, User, Settings, Star, Sparkles, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -42,9 +42,9 @@ export const MobileBottomNav = ({
       badge: null, 
     },
     {
-      id: "settings",
-      label: "Réglages",
-      icon: Settings,
+      id: "ai-recommendations",
+      label: "IA",
+      icon: Sparkles,
       badge: null,
     },
   ];

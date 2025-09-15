@@ -50,7 +50,10 @@ export const AnimalDetailsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 overflow-hidden" aria-describedby="animal-details-description">
+        <div id="animal-details-description" className="sr-only">
+          Détails complets de {animal.name}, un {animal.type.toLowerCase()} de race {animal.breed}
+        </div>
         <ScrollArea className="h-full">
           {/* Image Carousel */}
           <div className="relative">

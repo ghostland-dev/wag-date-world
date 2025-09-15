@@ -111,6 +111,9 @@ export const ChatModal = ({ isOpen, onClose, animal, currentUserId }: ChatModalP
               <DialogTitle className="text-lg font-semibold">
                 {animal.name}
               </DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                Chat avec le propriétaire de {animal.name}
+              </p>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-xs">
                   {animal.breed}
