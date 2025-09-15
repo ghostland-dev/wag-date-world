@@ -25,39 +25,49 @@ interface NavigationProps {
 export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick }: NavigationProps) => {
   const { user, isAuthenticated, logout } = useUser();
 
-  // Navigation items based on user role
-  const getNavItems = () => {
-    const baseItems = [
-      { id: "discover", label: "Découvrir", icon: Heart },
-    ];
+  const navItems = [
+    { 
+      id: "discover", 
+      label: "Découvrir", 
+      icon: Search,
+      showForGuests: true 
+    },
+    { 
+      id: "matches", 
+      label: "Matches", 
+      icon: Heart, 
+      badge: matchCount,
+      showForGuests: false 
+    },
+    {
+      id: "favorites",
+      label: "Favoris",
+      icon: Star,
+      showForGuests: false
+    },
+    {
+      id: "messages",
+      label: "Messages",
+      icon: MessageCircle,
+      showForGuests: false
+    },
+    { 
+      id: "profile", 
+      label: "Profil", 
+      icon: User,
+      showForGuests: false 
+    },
+    { 
+      id: "settings", 
+      label: "Paramètres", 
+      icon: Settings,
+      showForGuests: false 
+    },
+  ];
 
-    if (!isAuthenticated) return baseItems;
-
-    const roleSpecificItems = [];
-    
-    if (user?.role === 'super_admin') {
-      roleSpecificItems.push(
-        { id: "admin", label: "Administration", icon: Shield },
-        { id: "discover", label: "Découvrir", icon: Heart },
-      );
-    } else if (user?.role === 'owner') {
-      roleSpecificItems.push(
-        { id: "dashboard", label: "Mon espace", icon: BarChart3 },
-        { id: "discover", label: "Découvrir", icon: Heart },
-        { id: "matches", label: "Matches", icon: MessageCircle, badge: matchCount },
-      );
-    } else if (user?.role === 'adopter') {
-      roleSpecificItems.push(
-        { id: "discover", label: "Découvrir", icon: Heart },
-        { id: "dashboard", label: "Mon espace", icon: Users },
-        { id: "matches", label: "Matches", icon: MessageCircle, badge: matchCount },
-      );
-    }
-
-    return roleSpecificItems.length > 0 ? roleSpecificItems : baseItems;
-  };
-
-  const navItems = getNavItems();
+  const filteredNavItems = isAuthenticated 
+    ? navItems.filter(item => !item.showForGuests || item.showForGuests) 
+    : navItems.filter(item => item.showForGuests);
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
@@ -84,7 +94,7 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
             {isAuthenticated ? (
               <>
                 <nav className="flex items-center space-x-1">
-                  {navItems.map((item) => {
+                  {filteredNavItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = currentPage === item.id;
                     

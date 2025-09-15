@@ -6,6 +6,7 @@ import { MatchesPage } from "@/components/pages/MatchesPage";
 import { ProfilePage } from "@/components/pages/ProfilePage";
 import { SettingsPage } from "@/components/pages/SettingsPage";
 import { FavoritesPage } from "@/components/FavoritesManager";
+import { MessagesPage } from "@/components/MessagesPage";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
@@ -68,6 +69,11 @@ const Index = () => {
         return {
           title: "Mes Favoris - PetMatch",
           description: "Votre liste de souhaits d'animaux de compagnie."
+        };
+      case "messages":
+        return {
+          title: "Messages - PetMatch", 
+          description: "Vos conversations avec les propriétaires d'animaux."
         };
       case "profile":
         return {
@@ -149,6 +155,8 @@ const Index = () => {
         return <MatchesPage matches={matches} />;
       case "favorites":
         return <FavoritesPage />;
+      case "messages":
+        return <MessagesPage />;
       case "profile":
         return <ProfilePage />;
       case "settings":

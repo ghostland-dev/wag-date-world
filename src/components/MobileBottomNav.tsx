@@ -1,4 +1,4 @@
-import { Heart, Search, MessageCircle, User, Settings } from "lucide-react";
+import { Heart, Search, MessageCircle, User, Settings, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -30,16 +30,16 @@ export const MobileBottomNav = ({
       badge: matchCount > 0 ? matchCount : null,
     },
     {
+      id: "favorites",
+      label: "Favoris", 
+      icon: Star,
+      badge: null, 
+    },
+    {
       id: "messages",
       label: "Messages", 
       icon: MessageCircle,
-      badge: null, // Could add unread message count
-    },
-    {
-      id: "profile",
-      label: "Profil",
-      icon: User,
-      badge: null,
+      badge: null, 
     },
     {
       id: "settings",

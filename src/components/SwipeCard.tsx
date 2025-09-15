@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Heart, X, MapPin, Calendar, Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Animal } from "@/data/animals";
+import { useSwipe } from "@/hooks/useSwipe";
 
 interface SwipeCardProps {
   animal: Animal;
@@ -13,110 +14,24 @@ interface SwipeCardProps {
 }
 
 export const SwipeCard = ({ animal, onLike, onPass, onInfoClick }: SwipeCardProps) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragX, setDragX] = useState(0);
-  const [dragRotation, setDragRotation] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
-  const startX = useRef(0);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    startX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    
-    const currentX = e.touches[0].clientX;
-    const deltaX = currentX - startX.current;
-    const rotation = deltaX * 0.1; // Subtle rotation effect
-    
-    setDragX(deltaX);
-    setDragRotation(rotation);
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    
-    const threshold = window.innerWidth * 0.25; // 25% of screen width
-    
-    if (Math.abs(dragX) > threshold) {
-      if (dragX > 0) {
-        onLike(animal.id);
-      } else {
-        onPass(animal.id);
-      }
-    }
-    
-    setDragX(0);
-    setDragRotation(0);
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    startX.current = e.clientX;
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    
-    const deltaX = e.clientX - startX.current;
-    const rotation = deltaX * 0.1;
-    
-    setDragX(deltaX);
-    setDragRotation(rotation);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    
-    const threshold = window.innerWidth * 0.25;
-    
-    if (Math.abs(dragX) > threshold) {
-      if (dragX > 0) {
-        onLike(animal.id);
-      } else {
-        onPass(animal.id);
-      }
-    }
-    
-    setDragX(0);
-    setDragRotation(0);
-  };
-
-  useEffect(() => {
-    const handleMouseMoveGlobal = (e: MouseEvent) => {
-      if (isDragging) {
-        const deltaX = e.clientX - startX.current;
-        const rotation = deltaX * 0.1;
-        setDragX(deltaX);
-        setDragRotation(rotation);
-      }
-    };
-
-    const handleMouseUpGlobal = () => {
-      if (isDragging) {
-        handleMouseUp();
-      }
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMoveGlobal);
-      document.addEventListener('mouseup', handleMouseUpGlobal);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMoveGlobal);
-      document.removeEventListener('mouseup', handleMouseUpGlobal);
-    };
-  }, [isDragging]);
+  const { swipeHandlers, swipeState } = useSwipe({
+    onSwipeLeft: () => onPass(animal.id),
+    onSwipeRight: () => onLike(animal.id)
+  }, {
+    threshold: 100,
+    trackMouse: true
+  });
 
   const cardStyle = {
-    transform: `translateX(${dragX}px) rotate(${dragRotation}deg)`,
-    transition: isDragging ? 'none' : 'all 0.3s ease-out',
+    transform: swipeState.isSwiping 
+      ? `translateX(${swipeState.deltaX}px) rotate(${swipeState.deltaX * 0.05}deg)` 
+      : 'none',
+    transition: swipeState.isSwiping ? 'none' : 'all 0.3s ease-out',
   };
 
-  const overlayOpacity = Math.min(Math.abs(dragX) / (window.innerWidth * 0.25), 0.8);
+  const overlayOpacity = Math.min(Math.abs(swipeState.deltaX) / 150, 0.8);
 
   return (
     <div className="relative w-full max-w-sm mx-auto">
@@ -124,16 +39,13 @@ export const SwipeCard = ({ animal, onLike, onPass, onInfoClick }: SwipeCardProp
         ref={cardRef}
         className="overflow-hidden shadow-[var(--shadow-card)] cursor-grab active:cursor-grabbing select-none touch-none"
         style={cardStyle}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
+        {...swipeHandlers}
       >
         {/* Swipe Overlays */}
-        {dragX !== 0 && (
+        {swipeState.isSwiping && swipeState.deltaX !== 0 && (
           <>
             {/* Like Overlay */}
-            {dragX > 0 && (
+            {swipeState.deltaX > 0 && (
               <div 
                 className="absolute inset-0 bg-secondary/20 z-10 flex items-center justify-center"
                 style={{ opacity: overlayOpacity }}
@@ -145,7 +57,7 @@ export const SwipeCard = ({ animal, onLike, onPass, onInfoClick }: SwipeCardProp
             )}
             
             {/* Pass Overlay */}
-            {dragX < 0 && (
+            {swipeState.deltaX < 0 && (
               <div 
                 className="absolute inset-0 bg-destructive/20 z-10 flex items-center justify-center"
                 style={{ opacity: overlayOpacity }}
