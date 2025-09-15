@@ -13,7 +13,7 @@ interface Notification {
   type: 'match' | 'message' | 'like' | 'system';
   title: string;
   description: string;
-  timestamp: Date;
+  timestamp: Date | string;
   read: boolean;
   avatar?: string;
   actionUrl?: string;
@@ -109,9 +109,10 @@ export const NotificationCenter = () => {
     }
   };
 
-  const formatTime = (date: Date) => {
+  const formatTime = (date: Date | string) => {
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const diffInMinutes = Math.floor((now.getTime() - dateObj.getTime()) / (1000 * 60));
     
     if (diffInMinutes < 1) return 'À l\'instant';
     if (diffInMinutes < 60) return `Il y a ${diffInMinutes}min`;
