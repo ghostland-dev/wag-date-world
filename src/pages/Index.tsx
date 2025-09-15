@@ -13,6 +13,10 @@ import { SEOHead } from "@/components/SEOHead";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { OfflineIndicator } from "@/components/OfflineManager";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { SuperAdminDashboard } from "@/components/dashboards/SuperAdminDashboard";
+import { OwnerDashboard } from "@/components/dashboards/OwnerDashboard";
+import { AdopterDashboard } from "@/components/dashboards/AdopterDashboard";
+import { RoleBasedRoute } from "@/components/RoleBasedRoute";
 import { useUser } from "@/contexts/UserContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -98,6 +102,31 @@ const Index = () => {
             </p>
           </div>
         </>
+      );
+    }
+
+    // Dashboards basés sur le rôle
+    if (user?.role === 'super_admin' && currentPage === 'admin') {
+      return (
+        <RoleBasedRoute allowedRoles={['super_admin']}>
+          <SuperAdminDashboard />
+        </RoleBasedRoute>
+      );
+    }
+
+    if (user?.role === 'owner' && currentPage === 'dashboard') {
+      return (
+        <RoleBasedRoute allowedRoles={['owner']}>
+          <OwnerDashboard />
+        </RoleBasedRoute>
+      );
+    }
+
+    if (user?.role === 'adopter' && currentPage === 'dashboard') {
+      return (
+        <RoleBasedRoute allowedRoles={['adopter']}>
+          <AdopterDashboard />
+        </RoleBasedRoute>
       );
     }
 

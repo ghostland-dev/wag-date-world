@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { UserRole } from "@/types/user";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -21,6 +23,9 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) =>
     password: "",
     name: "",
     confirmPassword: "",
+    role: "adopter" as UserRole,
+    organizationType: "individual" as "individual" | "association" | "shelter",
+    organizationName: "",
   });
   const { toast } = useToast();
 
@@ -38,7 +43,12 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) =>
         id: "1",
         name: "Marie Dupont",
         email: formData.email,
-        avatar: null,
+        avatar: undefined,
+        role: "adopter" as UserRole,
+        isVerified: true,
+        phone: undefined,
+        location: undefined,
+        createdAt: new Date(),
       };
       
       onAuthSuccess(mockUser);
@@ -68,10 +78,17 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) =>
     // Simulate API call
     setTimeout(() => {
       const mockUser = {
-        id: "1",
+        id: "2",
         name: formData.name,
         email: formData.email,
-        avatar: null,
+        avatar: undefined,
+        role: formData.role,
+        isVerified: false,
+        phone: undefined,
+        location: undefined,
+        createdAt: new Date(),
+        organizationType: formData.role === 'owner' ? formData.organizationType : undefined,
+        organizationName: formData.role === 'owner' && formData.organizationType !== 'individual' ? formData.organizationName : undefined,
       };
       
       onAuthSuccess(mockUser);
@@ -185,6 +202,56 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) =>
                   />
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-role">Type de compte</Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value: UserRole) => handleInputChange("role", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="adopter">Adoptant - Je cherche un animal</SelectItem>
+                    <SelectItem value="owner">Propriétaire - Je propose des animaux</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {formData.role === 'owner' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="organization-type">Type d'organisation</Label>
+                    <Select
+                      value={formData.organizationType}
+                      onValueChange={(value: any) => handleInputChange("organizationType", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="individual">Particulier</SelectItem>
+                        <SelectItem value="association">Association</SelectItem>
+                        <SelectItem value="shelter">Refuge/SPA</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {formData.organizationType !== 'individual' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="organization-name">Nom de l'organisation</Label>
+                      <Input
+                        id="organization-name"
+                        type="text"
+                        placeholder="Refuge de la Vallée"
+                        value={formData.organizationName}
+                        onChange={(e) => handleInputChange("organizationName", e.target.value)}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="signup-password">Mot de passe</Label>

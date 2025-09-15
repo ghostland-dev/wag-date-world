@@ -1,14 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  location?: string;
-  createdAt: Date;
-}
+import { User, UserRole } from '@/types/user';
 
 interface UserContextType {
   user: User | null;
@@ -38,6 +30,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userWithDefaults = {
       ...user,
       createdAt: new Date(),
+      role: user.role || 'adopter' as UserRole,
+      isVerified: user.isVerified || false,
     };
     setStoredUser(userWithDefaults);
   };

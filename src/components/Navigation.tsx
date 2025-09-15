@@ -1,4 +1,4 @@
-import { Heart, User, Settings, MessageCircle, LogOut, MoreHorizontal } from "lucide-react";
+import { Heart, User, Settings, MessageCircle, LogOut, Shield, BarChart3, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -16,28 +16,58 @@ interface NavigationProps {
 
 export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick }: NavigationProps) => {
   const { user, isAuthenticated, logout } = useUser();
-  const navItems = [
-    { id: "discover", label: "Découvrir", icon: Heart },
-    { id: "matches", label: "Matches", icon: MessageCircle, badge: matchCount },
-    { id: "profile", label: "Profil", icon: User },
-    { id: "settings", label: "Paramètres", icon: Settings },
-  ];
+
+  // Navigation items based on user role
+  const getNavItems = () => {
+    const baseItems = [
+      { id: "discover", label: "Découvrir", icon: Heart },
+    ];
+
+    if (!isAuthenticated) return baseItems;
+
+    const roleSpecificItems = [];
+    
+    if (user?.role === 'super_admin') {
+      roleSpecificItems.push(
+        { id: "admin", label: "Administration", icon: Shield },
+        { id: "discover", label: "Découvrir", icon: Heart },
+      );
+    } else if (user?.role === 'owner') {
+      roleSpecificItems.push(
+        { id: "dashboard", label: "Mon espace", icon: BarChart3 },
+        { id: "discover", label: "Découvrir", icon: Heart },
+        { id: "matches", label: "Matches", icon: MessageCircle, badge: matchCount },
+      );
+    } else if (user?.role === 'adopter') {
+      roleSpecificItems.push(
+        { id: "discover", label: "Découvrir", icon: Heart },
+        { id: "dashboard", label: "Mon espace", icon: Users },
+        { id: "matches", label: "Matches", icon: MessageCircle, badge: matchCount },
+      );
+    }
+
+    return roleSpecificItems.length > 0 ? roleSpecificItems : baseItems;
+  };
+
+  const navItems = getNavItems();
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 py-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-[var(--gradient-primary)] rounded-full">
-              <Heart className="w-6 h-6 text-white" />
+              <Heart className="w-5 h-5 text-white sm:w-6 sm:h-6" />
             </div>
-            <h1 className="text-2xl font-bold bg-[var(--gradient-primary)] bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl font-bold bg-[var(--gradient-primary)] bg-clip-text text-transparent">
               PetMatch
             </h1>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <GeolocationManager />
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="hidden md:block">
+              <GeolocationManager />
+            </div>
             <ThemeToggle />
             
             {isAuthenticated ? (
@@ -55,7 +85,7 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
                         className={`relative ${isActive ? "bg-[var(--gradient-primary)]" : "hover:bg-accent"}`}
                         onClick={() => onPageChange(item.id)}
                       >
-                        <Icon className="w-4 h-4 mr-2" />
+                        <Icon className="w-4 h-4 sm:mr-2" />
                         <span className="hidden sm:inline">{item.label}</span>
                         {item.badge && item.badge > 0 && (
                           <Badge
@@ -72,10 +102,10 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
                 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-8 w-8">
+                    <Button variant="ghost" className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-full">
+                      <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                         <AvatarImage src={user?.avatar} alt={user?.name} />
-                        <AvatarFallback className="bg-[var(--gradient-primary)] text-white">
+                        <AvatarFallback className="bg-[var(--gradient-primary)] text-white text-sm">
                           {user?.name?.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -88,6 +118,10 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
                         <p className="w-[200px] truncate text-sm text-muted-foreground">
                           {user?.email}
                         </p>
+                        <Badge variant="outline" className="text-xs w-fit">
+                          {user?.role === 'super_admin' ? 'Admin' : 
+                           user?.role === 'owner' ? 'Propriétaire' : 'Adoptant'}
+                        </Badge>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
@@ -108,7 +142,7 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
                 </DropdownMenu>
               </>
             ) : (
-              <Button onClick={onAuthClick} className="bg-[var(--gradient-primary)]">
+              <Button onClick={onAuthClick} className="bg-[var(--gradient-primary)] text-sm sm:text-base px-3 sm:px-4">
                 Se connecter
               </Button>
             )}
