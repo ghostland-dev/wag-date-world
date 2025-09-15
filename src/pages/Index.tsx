@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { MatchSection } from "@/components/MatchSection";
@@ -6,16 +6,97 @@ import { MatchesPage } from "@/components/pages/MatchesPage";
 import { ProfilePage } from "@/components/pages/ProfilePage";
 import { SettingsPage } from "@/components/pages/SettingsPage";
 import { Footer } from "@/components/Footer";
+import { AuthModal } from "@/components/AuthModal";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { CookieConsent } from "@/components/CookieConsent";
+import { SEOHead } from "@/components/SEOHead";
+import { useUser } from "@/contexts/UserContext";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState("discover");
-  const [matches, setMatches] = useState<string[]>([]);
+  const [matches, setMatches] = useLocalStorage<string[]>('petmatch_matches', []);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { user, isAuthenticated, login, isLoading } = useUser();
+  const { track, page, identify } = useAnalytics();
+
+  useEffect(() => {
+    page(currentPage);
+  }, [currentPage, page]);
+
+  useEffect(() => {
+    if (user) {
+      identify(user.id, { name: user.name, email: user.email });
+    }
+  }, [user, identify]);
 
   const handleLike = (id: string) => {
-    setMatches(prev => [...prev, id]);
+    setMatches(prev => {
+      const newMatches = [...prev, id];
+      track('animal_liked', { animalId: id });
+      if (!prev.includes(id)) {
+        track('match_created', { animalId: id });
+      }
+      return newMatches;
+    });
   };
 
+  const handleAuthSuccess = (userData: any) => {
+    login(userData);
+    track('auth_signin', { userId: userData.id });
+  };
+
+  const getPageSEO = () => {
+    switch (currentPage) {
+      case "matches":
+        return {
+          title: "Mes Matches - PetMatch",
+          description: `Vous avez ${matches.length} matches ! Chattez avec les propriétaires d'animaux compatibles.`
+        };
+      case "profile":
+        return {
+          title: "Mon Profil - PetMatch",
+          description: "Gérez votre profil et les informations de vos animaux de compagnie."
+        };
+      case "settings":
+        return {
+          title: "Paramètres - PetMatch",
+          description: "Configurez vos préférences de recherche et de confidentialité."
+        };
+      default:
+        return {
+          title: "PetMatch - Rencontres pour animaux de compagnie",
+          description: "Trouvez le partenaire idéal pour votre animal : reproduction responsable et socialisation."
+        };
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Chargement de PetMatch..." />
+      </div>
+    );
+  }
+
   const renderCurrentPage = () => {
+    if (!isAuthenticated && currentPage !== "discover") {
+      return (
+        <>
+          <Hero />
+          <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
+              Connectez-vous pour accéder à cette fonctionnalité
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              Créez un compte gratuit pour découvrir des compagnons pour votre animal
+            </p>
+          </div>
+        </>
+      );
+    }
+
     switch (currentPage) {
       case "discover":
         return (
@@ -41,17 +122,29 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation 
-        currentPage={currentPage} 
-        onPageChange={setCurrentPage}
-        matchCount={matches.length}
-      />
-      <main className="animate-fade-in">
-        {renderCurrentPage()}
-      </main>
-      <Footer />
-    </div>
+    <>
+      <SEOHead {...getPageSEO()} />
+      <div className="min-h-screen bg-background">
+        <Navigation 
+          currentPage={currentPage} 
+          onPageChange={setCurrentPage}
+          matchCount={matches.length}
+          onAuthClick={() => setShowAuthModal(true)}
+        />
+        <main className="animate-fade-in">
+          {renderCurrentPage()}
+        </main>
+        <Footer />
+        
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onAuthSuccess={handleAuthSuccess}
+        />
+        
+        <CookieConsent />
+      </div>
+    </>
   );
 };
 

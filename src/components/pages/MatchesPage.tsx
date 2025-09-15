@@ -1,16 +1,28 @@
+import { useState } from "react";
 import { MessageCircle, MapPin, Calendar, Heart, Users, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/StatsCard";
+import { ChatModal } from "@/components/ChatModal";
 import { animals, Animal } from "@/data/animals";
+import { useUser } from "@/contexts/UserContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface MatchesPageProps {
   matches: string[];
 }
 
 export const MatchesPage = ({ matches }: MatchesPageProps) => {
+  const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+  const { user } = useUser();
+  const { track } = useAnalytics();
   const matchedAnimals = animals.filter(animal => matches.includes(animal.id));
+
+  const handleChatOpen = (animal: Animal) => {
+    setSelectedAnimal(animal);
+    track('profile_viewed', { animalId: animal.id, source: 'matches' });
+  };
 
   if (matches.length === 0) {
     return (
@@ -110,6 +122,7 @@ export const MatchesPage = ({ matches }: MatchesPageProps) => {
               <Button 
                 className="w-full bg-[var(--gradient-primary)] hover:opacity-90"
                 size="sm"
+                onClick={() => handleChatOpen(animal)}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Contacter
@@ -118,6 +131,15 @@ export const MatchesPage = ({ matches }: MatchesPageProps) => {
           </Card>
         ))}
       </div>
+
+      {selectedAnimal && user && (
+        <ChatModal
+          isOpen={!!selectedAnimal}
+          onClose={() => setSelectedAnimal(null)}
+          animal={selectedAnimal}
+          currentUserId={user.id}
+        />
+      )}
     </div>
   );
 };
