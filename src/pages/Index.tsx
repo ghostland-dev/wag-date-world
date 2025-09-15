@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
-import { MatchSection } from "@/components/MatchSection";
+import { EnhancedMatchSection } from "@/components/EnhancedMatchSection";
 import { MatchesPage } from "@/components/pages/MatchesPage";
 import { ProfilePage } from "@/components/pages/ProfilePage";
 import { SettingsPage } from "@/components/pages/SettingsPage";
+import { FavoritesPage } from "@/components/FavoritesManager";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -61,6 +63,11 @@ const Index = () => {
         return {
           title: "Mes Matches - PetMatch",
           description: `Vous avez ${matches.length} matches ! Chattez avec les propriétaires d'animaux compatibles.`
+        };
+      case "favorites":
+        return {
+          title: "Mes Favoris - PetMatch",
+          description: "Votre liste de souhaits d'animaux de compagnie."
         };
       case "profile":
         return {
@@ -135,11 +142,13 @@ const Index = () => {
         return (
           <>
             <Hero />
-            <MatchSection onMatch={handleLike} />
+            <EnhancedMatchSection onMatch={handleLike} />
           </>
         );
       case "matches":
         return <MatchesPage matches={matches} />;
+      case "favorites":
+        return <FavoritesPage />;
       case "profile":
         return <ProfilePage />;
       case "settings":
@@ -148,7 +157,7 @@ const Index = () => {
         return (
           <>
             <Hero />
-            <MatchSection onMatch={handleLike} />
+            <EnhancedMatchSection onMatch={handleLike} />
           </>
         );
     }
@@ -164,10 +173,19 @@ const Index = () => {
           matchCount={matches.length}
           onAuthClick={() => setShowAuthModal(true)}
         />
-        <main className="animate-fade-in">
+        <main className="animate-fade-in pb-20 md:pb-0">
           {renderCurrentPage()}
         </main>
-        <Footer />
+        <div className="hidden md:block">
+          <Footer />
+        </div>
+        
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          matchCount={matches.length}
+        />
         
         <AuthModal
           isOpen={showAuthModal}

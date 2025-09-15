@@ -1,9 +1,17 @@
-import { Heart, User, Settings, MessageCircle, LogOut, Shield, BarChart3, Users } from "lucide-react";
+import { useState } from "react";
+import { Menu, Heart, Search, User, Bell, Settings, LogOut, Star, Shield, BarChart3, MessageCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { GeolocationManager } from "@/components/GeolocationManager";
 import { useUser } from "@/contexts/UserContext";
 
@@ -69,6 +77,9 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
               <GeolocationManager />
             </div>
             <ThemeToggle />
+            
+            {/* Notifications */}
+            {isAuthenticated && <NotificationCenter />}
             
             {isAuthenticated ? (
               <>
