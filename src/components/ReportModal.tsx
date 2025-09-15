@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AlertTriangle, Flag, MessageSquare, Shield } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -114,6 +114,9 @@ export const ReportModal = ({ isOpen, onClose, animal }: ReportModalProps) => {
             <AlertTriangle className="w-5 h-5" />
             Signaler ce profil
           </DialogTitle>
+          <DialogDescription>
+            Indiquez le motif du signalement et fournissez des détails si nécessaire
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">

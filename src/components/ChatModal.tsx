@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -185,6 +185,8 @@ export const ChatModal = ({ isOpen, onClose, conversation }: ChatModalProps) => 
       <DialogContent className="max-w-md mx-auto p-0 gap-0 h-[600px] flex flex-col">
         {/* Header */}
         <DialogHeader className="border-b p-4 flex-shrink-0">
+          <DialogTitle className="sr-only">Conversation avec {conversation.ownerName} au sujet de {conversation.animalName}</DialogTitle>
+          <DialogDescription className="sr-only">Messagerie PetMatch</DialogDescription>
           <div className="flex items-center gap-3">
             <Avatar className="w-10 h-10">
               <AvatarImage src={conversation.avatar} />

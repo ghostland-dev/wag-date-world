@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -108,6 +108,9 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) =>
           <DialogTitle className="text-2xl font-bold text-center">
             Rejoignez PetMatch
           </DialogTitle>
+          <DialogDescription className="text-center text-muted-foreground">
+            Connectez-vous ou créez un compte pour continuer
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="signin" className="w-full">

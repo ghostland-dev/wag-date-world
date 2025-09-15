@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Home, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,10 +33,10 @@ const NotFound = () => {
             asChild
             className="w-full bg-[var(--gradient-primary)] gap-2"
           >
-            <a href="/">
+            <Link to="/">
               <Home className="w-4 h-4" />
               Retourner à l'accueil
-            </a>
+            </Link>
           </Button>
           
           <Button

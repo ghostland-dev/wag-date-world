@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Save, X, Camera } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -127,6 +127,9 @@ export const CreateAnimalForm = ({
           <DialogTitle className="text-2xl">
             {editingAnimal ? "Modifier l'animal" : "Ajouter un nouvel animal"}
           </DialogTitle>
+          <DialogDescription>
+            Renseignez les informations de votre animal pour créer un profil complet
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
