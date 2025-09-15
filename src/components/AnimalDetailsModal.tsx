@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Heart, X, MapPin, Calendar, Star, Shield, Camera, MessageCircle } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -50,10 +50,13 @@ export const AnimalDetailsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] p-0 overflow-hidden" aria-describedby="animal-details-description">
-        <div id="animal-details-description" className="sr-only">
-          Détails complets de {animal.name}, un {animal.type.toLowerCase()} de race {animal.breed}
-        </div>
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 overflow-hidden">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Profil de {animal.name}</DialogTitle>
+          <DialogDescription>
+            Détails complets de {animal.name}, un {animal.type.toLowerCase()} de race {animal.breed}
+          </DialogDescription>
+        </DialogHeader>
         <ScrollArea className="h-full">
           {/* Image Carousel */}
           <div className="relative">

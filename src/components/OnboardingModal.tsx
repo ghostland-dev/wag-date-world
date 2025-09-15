@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowRight, ArrowLeft, Heart, Users, MapPin, Shield, Check } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -80,6 +80,12 @@ export const OnboardingModal = ({ isOpen, onComplete }: OnboardingModalProps) =>
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-2xl p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Guide de démarrage PetMatch</DialogTitle>
+          <DialogDescription>
+            Découvrez comment utiliser PetMatch pour connecter vos animaux de compagnie
+          </DialogDescription>
+        </DialogHeader>
         <Button 
           variant="ghost" 
           size="icon" 
