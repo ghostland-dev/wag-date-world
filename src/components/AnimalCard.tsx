@@ -23,7 +23,7 @@ interface AnimalCardProps {
 
 export const AnimalCard = ({ animal, onLike, onPass }: AnimalCardProps) => {
   return (
-    <Card className="w-full max-w-sm mx-auto overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-soft)] transition-all duration-300 transform hover:scale-[1.02]">
+    <Card className="w-full max-w-sm mx-auto overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-soft)] transition-all duration-300 transform hover:scale-[1.02] animate-scale-in">
       <div className="relative">
         <img
           src={animal.image}
