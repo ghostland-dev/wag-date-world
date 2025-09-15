@@ -1,8 +1,10 @@
-import { Heart, User, Settings, MessageCircle, LogOut } from "lucide-react";
+import { Heart, User, Settings, MessageCircle, LogOut, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { GeolocationManager } from "@/components/GeolocationManager";
 import { useUser } from "@/contexts/UserContext";
 
 interface NavigationProps {
@@ -35,6 +37,9 @@ export const Navigation = ({ currentPage, onPageChange, matchCount, onAuthClick 
           </div>
           
           <div className="flex items-center space-x-4">
+            <GeolocationManager />
+            <ThemeToggle />
+            
             {isAuthenticated ? (
               <>
                 <nav className="flex items-center space-x-1">

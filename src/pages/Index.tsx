@@ -10,6 +10,9 @@ import { AuthModal } from "@/components/AuthModal";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { CookieConsent } from "@/components/CookieConsent";
 import { SEOHead } from "@/components/SEOHead";
+import { OnboardingModal } from "@/components/OnboardingModal";
+import { OfflineIndicator } from "@/components/OfflineManager";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useUser } from "@/contexts/UserContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -18,6 +21,7 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState("discover");
   const [matches, setMatches] = useLocalStorage<string[]>('petmatch_matches', []);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useLocalStorage('petmatch_onboarding', false);
   const { user, isAuthenticated, login, isLoading } = useUser();
   const { track, page, identify } = useAnalytics();
 
@@ -142,7 +146,14 @@ const Index = () => {
           onAuthSuccess={handleAuthSuccess}
         />
         
+        <OnboardingModal
+          isOpen={!hasSeenOnboarding && !isLoading}
+          onComplete={() => setHasSeenOnboarding(true)}
+        />
+        
         <CookieConsent />
+        <OfflineIndicator />
+        <PWAInstallPrompt />
       </div>
     </>
   );

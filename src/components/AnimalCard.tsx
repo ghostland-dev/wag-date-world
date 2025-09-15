@@ -1,7 +1,10 @@
-import { Heart, X, MapPin, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Heart, X, MapPin, Calendar, MoreHorizontal, Flag } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ReportModal } from "@/components/ReportModal";
 
 interface Animal {
   id: string;
@@ -22,6 +25,7 @@ interface AnimalCardProps {
 }
 
 export const AnimalCard = ({ animal, onLike, onPass }: AnimalCardProps) => {
+  const [showReportModal, setShowReportModal] = useState(false);
   return (
     <Card className="w-full max-w-sm mx-auto overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-soft)] transition-all duration-300 transform hover:scale-[1.02] animate-scale-in">
       <div className="relative">
@@ -35,10 +39,23 @@ export const AnimalCard = ({ animal, onLike, onPass }: AnimalCardProps) => {
             {animal.type}
           </Badge>
         </div>
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex gap-2">
           <Badge variant="outline" className="bg-card/90 backdrop-blur-sm">
             {animal.purpose}
           </Badge>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 bg-card/90 backdrop-blur-sm">
+                <MoreHorizontal className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setShowReportModal(true)} className="text-destructive">
+                <Flag className="mr-2 h-4 w-4" />
+                Signaler ce profil
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
@@ -81,6 +98,12 @@ export const AnimalCard = ({ animal, onLike, onPass }: AnimalCardProps) => {
           </Button>
         </div>
       </div>
+      
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        animal={animal}
+      />
     </Card>
   );
 };
