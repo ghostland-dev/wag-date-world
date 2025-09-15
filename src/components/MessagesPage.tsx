@@ -203,8 +203,17 @@ export const MessagesPage = () => {
         <ChatModal
           isOpen={!!selectedAnimal}
           onClose={() => setSelectedChat(null)}
-          animal={selectedAnimal}
-          currentUserId={user.id}
+          conversation={{
+            id: selectedAnimal.id,
+            animalName: selectedAnimal.name,
+            ownerName: 'Propriétaire',
+            avatar: selectedAnimal.image,
+            lastMessage: 'Nouvelle conversation',
+            lastMessageTime: new Date(),
+            unreadCount: 0,
+            isOnline: true,
+            messages: []
+          }}
         />
       )}
     </>
